@@ -1,0 +1,13 @@
+function _ppa_lists(){
+    local cur
+    COMPREPLY=()
+    _get_comp_words_by_ref -n = cur
+    _expand || return 0
+   #COMPREPLY=( $( compgen -W 'abc def ghi jkl' -- "$cur" ) )
+    COMPREPLY=( $( compgen -W "$( find /etc/apt/sources.list.d/ -name "${cur}*.list" -exec basename {} \; 2> /dev/null )" -- "$cur" ) )
+    return 0
+} && 
+complete -F _ppa_lists update-repo
+
+# vim: ts=4 sw=4 et filetype=sh :
+

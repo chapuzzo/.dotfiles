@@ -1,0 +1,42 @@
+function update-repo() {
+  sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/$1" \
+-o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"    
+}
+
+function apt-history(){
+      case "$1" in
+        install)
+              cat /var/log/dpkg.log | grep 'install '
+              ;;
+        upgrade|remove)
+              cat /var/log/dpkg.log | grep $1
+              ;;
+        rollback)
+              cat /var/log/dpkg.log | grep upgrade | \
+                  grep "$2" -A10000000 | \
+                  grep "$3" -B10000000 | \
+                  awk '{print $4"="$5}'
+              ;;
+        *)
+              cat /var/log/dpkg.log
+              ;;
+      esac
+}
+
+function mkcd(){
+  mkdir $1
+  cd $1
+}
+
+
+function enable_rbenv(){
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+}
+
+function enable_rvm(){
+  export PATH="$PATH:$HOME/.rvm/bin"
+  source ~/.rvm/scripts/rvm
+}
+
+# vim: ts=4 sw=4 et filetype=sh :
